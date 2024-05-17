@@ -7,10 +7,11 @@ from controllers.AlunoController import AlunoController
 
 alunoRouter = APIRouter(prefix='/aluno', tags=['Aluno'] )
 
-@alunoRouter.get("/", response_model=list[AlunoBase])
-def read_notas(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    notas = AlunoController.get_notas(db, skip=skip, limit=limit)
-    return notas
+@alunoRouter.get("/", response_model=List[AlunoBase], status_code=200)
+def read_alunos(db: Session = Depends(get_db)) -> List[AlunoBase]:
+    users = AlunoController(db).list_users()
+    return users
+
 
 @alunoRouter.get("/{nota_id}", response_model=AlunoBase)
 def read_nota(nota_id: int, db: Session = Depends(get_db)):
