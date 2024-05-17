@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from  models.model import Nota
-from schemas.nota import *
+from models import Nota
+from schemas import NotaCreate, NotaUpdate
+from datetime import datetime, timezone, timedelta
 
 class NotaController:
     def __init__(self, db: Session):
@@ -14,7 +15,19 @@ class NotaController:
         return self.db.query(Nota).filter(Nota.id == nota_id).first()
 
     def create_nota(self, nota: NotaCreate):
-        db_nota = Nota(**nota.dict())
+        db_nota = Nota(**nota.dict(exclude={"media"}))
+
+        if nota.n1 is None:
+            raise HTTPException(status_code=400, detail="N1 must be provided.")
+
+        if nota.n2 is not None and db_nota.n1 is None:
+            raise HTTPException(status_code=400, detail="N1 must be provided before N2.")
+
+        if nota.n2 is not None:
+            db_nota.media = (nota.n1 + nota.n2) / 2
+
+        db_nota.data_nota = datetime.now(timezone.utc) - timedelta(hours=4)
+
         self.db.add(db_nota)
         self.db.commit()
         self.db.refresh(db_nota)
@@ -24,8 +37,13 @@ class NotaController:
         db_nota = self.db.query(Nota).filter(Nota.id == nota_id).first()
         if not db_nota:
             raise HTTPException(status_code=404, detail="Nota not found")
-        for key, value in nota.dict().items():
+
+        for key, value in nota.dict(exclude={"media"}).items():
             setattr(db_nota, key, value)
+
+        if db_nota.n1 is not None and db_nota.n2 is not None:
+            db_nota.media = (db_nota.n1 + db_nota.n2) / 2
+
         self.db.commit()
         self.db.refresh(db_nota)
         return db_nota

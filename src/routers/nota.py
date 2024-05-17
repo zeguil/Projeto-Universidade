@@ -1,38 +1,38 @@
 from typing import List
-from schemas.aluno import *
-from database.config import Session
 from fastapi import APIRouter, Depends, HTTPException
-from database.dependencies import get_db
+from sqlalchemy.orm import Session
+from database import get_db
+from schemas import NotaBase, NotaCreate, NotaUpdate
 from controllers.notaController import NotaController
 
-notasRouter = APIRouter(prefix='/nota', tags=['Nota'] )
+notasRouter = APIRouter(prefix='/nota', tags=['Nota'])
 
-@notasRouter.get("/notas/", response_model=list[nota_schema.Nota])
-def read_notas(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    notas = nota_controller.get_notas(db, skip=skip, limit=limit)
+@notasRouter.get("/", response_model=List[NotaBase], status_code=200)
+def read_notas(db: Session = Depends(get_db)) -> List[NotaBase]:
+    notas = NotaController(db).list_notas()
     return notas
 
-@notasRouter.get("/notas/{nota_id}", response_model=nota_schema.Nota)
+@notasRouter.get("/{nota_id}", response_model=NotaBase)
 def read_nota(nota_id: int, db: Session = Depends(get_db)):
-    db_nota = nota_controller.get_nota(db, nota_id=nota_id)
+    db_nota = NotaController(db).get_nota(nota_id)
     if db_nota is None:
         raise HTTPException(status_code=404, detail="Nota not found")
     return db_nota
 
-@notasRouter.post("/notas/", response_model=nota_schema.Nota)
-def create_nota(nota: nota_schema.NotaCreate, db: Session = Depends(get_db)):
-    return nota_controller.create_nota(db=db, nota=nota)
+@notasRouter.post("/", response_model=NotaBase)
+def create_nota(nota: NotaCreate, db: Session = Depends(get_db)):
+    return NotaController(db).create_nota(nota)
 
-@notasRouter.put("/notas/{nota_id}", response_model=nota_schema.Nota)
-def update_nota(nota_id: int, nota: nota_schema.NotaUpdate, db: Session = Depends(get_db)):
-    db_nota = nota_controller.update_nota(db=db, nota_id=nota_id, nota=nota)
+@notasRouter.put("/{nota_id}", response_model=NotaBase)
+def update_nota(nota_id: int, nota: NotaUpdate, db: Session = Depends(get_db)):
+    db_nota = NotaController(db).update_nota(nota_id, nota)
     if db_nota is None:
         raise HTTPException(status_code=404, detail="Nota not found")
     return db_nota
 
-@notasRouter.delete("/notas/{nota_id}", response_model=nota_schema.Nota)
+@notasRouter.delete("/{nota_id}", response_model=NotaBase)
 def delete_nota(nota_id: int, db: Session = Depends(get_db)):
-    db_nota = nota_controller.delete_nota(db=db, nota_id=nota_id)
+    db_nota = NotaController(db).delete_nota(nota_id)
     if db_nota is None:
         raise HTTPException(status_code=404, detail="Nota not found")
     return db_nota
