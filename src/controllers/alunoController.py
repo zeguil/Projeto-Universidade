@@ -1,40 +1,48 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from  models.model import Aluno
-from schemas.aluno import *
-from schemas.nota import NotaCreate
+from models.model import Aluno
+from schemas.aluno import AlunoBase, AlunoCreate, AlunoUpdate
+from typing import List
 
 class AlunoController:
     def __init__(self, db: Session):
         self.db = db
 
-    def list_users(self):
+    def list_alunos(self) -> List[AlunoBase]:
         return self.db.query(Aluno).all()
 
-    def get_nota(self, nota_id: int):
-        return self.db.query(Aluno).filter(Aluno.id == nota_id).first()
-
-    def create_nota(self, nota: NotaCreate):
-        db_nota = Aluno(**nota.dict())
-        self.db.add(db_nota)
+    def create_aluno(self, aluno: AlunoCreate) -> AlunoBase:
+        db_aluno = Aluno(
+            nome=aluno.nome,
+            data_nascimento=aluno.data_nascimento,
+            email=aluno.email
+        )
+        self.db.add(db_aluno)
         self.db.commit()
-        self.db.refresh(db_nota)
-        return db_nota
+        self.db.refresh(db_aluno)
+        return db_aluno
 
-    def update_nota(self, nota_id: int, nota: AlunoUpdate):
-        db_nota = self.db.query(Aluno).filter(Aluno.id == nota_id).first()
-        if not db_nota:
-            raise HTTPException(status_code=404, detail="Nota not found")
-        for key, value in nota.dict().items():
-            setattr(db_nota, key, value)
-        self.db.commit()
-        self.db.refresh(db_nota)
-        return db_nota
+    def update_aluno(self, aluno_id: int, aluno: AlunoUpdate) -> AlunoBase:
+        db_aluno = self.db.query(Aluno).filter(Aluno.id == aluno_id).first()
+        if not db_aluno:
+            raise HTTPException(status_code=404, detail="Aluno not found")
 
-    def delete_nota(self, nota_id: int):
-        db_nota = self.db.query(Aluno).filter(Aluno.id == nota_id).first()
-        if not db_nota:
-            raise HTTPException(status_code=404, detail="Nota not found")
-        self.db.delete(db_nota)
+        if aluno.nome is not None:
+            db_aluno.nome = aluno.nome
+        if aluno.data_nascimento is not None:
+            db_aluno.data_nascimento = aluno.data_nascimento
+        if aluno.email is not None:
+            db_aluno.email = aluno.email
+
         self.db.commit()
-        return db_nota
+        self.db.refresh(db_aluno)
+        return db_aluno
+
+    def delete_aluno(self, aluno_id: int) -> AlunoBase:
+        db_aluno = self.db.query(Aluno).filter(Aluno.id == aluno_id).first()
+        if not db_aluno:
+            raise HTTPException(status_code=404, detail="Aluno not found")
+
+        self.db.delete(db_aluno)
+        self.db.commit()
+        return db_aluno

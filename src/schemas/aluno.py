@@ -1,16 +1,21 @@
 from pydantic import BaseModel
-from datetime import date
 from typing import Optional
 
 class AlunoBase(BaseModel):
+    id: int
     nome: str
-    data_nascimento: date
+    data_nascimento: str
     email: str
 
-class AlunoCreate(AlunoBase):
-    pass
+    class Config:
+        orm_mode = True
 
-class AlunoUpdate(AlunoBase):
-    pass
+class AlunoCreate(BaseModel):
+    nome: str
+    data_nascimento: str
+    email: str
 
-
+class AlunoUpdate(BaseModel):
+    nome: Optional[str] = None
+    data_nascimento: Optional[str] = None
+    email: Optional[str] = None
