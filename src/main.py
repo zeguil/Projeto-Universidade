@@ -1,6 +1,6 @@
 import uvicorn
 from typing import Dict
-# from models.user import User, Profile
+from models.model import *
 from database.config import Base, engine
 from routers.aluno import alunoRouter
 from routers.disciplina import disciplinaRouter
