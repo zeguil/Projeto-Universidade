@@ -4,7 +4,7 @@ from typing import Dict
 from database.config import Base, engine
 from routers.aluno import alunoRouter
 from routers.disciplina import disciplinaRouter
-from routers.nota import notasRouter
+from routers.nota import notaRouter
 from sqlalchemy import inspect
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,7 +43,7 @@ app.add_middleware(
 
 app.include_router(alunoRouter)
 app.include_router(disciplinaRouter)
-app.include_router(notasRouter)
+app.include_router(notaRouter)
 
 
 

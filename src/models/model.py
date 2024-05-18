@@ -32,7 +32,3 @@ class Nota(Base):
 
     aluno = relationship("Aluno")
     disciplina = relationship("Disciplina")
-
-    def calculate_media(self):
-        if self.n1 is not None and self.n2 is not None:
-            self.media = (self.n1 + self.n2) / 2
