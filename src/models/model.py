@@ -1,12 +1,6 @@
-from zoneinfo import ZoneInfo
 from database.config import Base
-from datetime import datetime, timezone
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Float, Date
-
-
-def get_current_time_utc_minus_4():
-    return datetime.now(timezone.utc).astimezone(ZoneInfo("America/Manaus"))
 
 
 class Aluno(Base):
@@ -35,7 +29,6 @@ class Nota(Base):
     n1 = Column(Float, nullable=False)
     n2 = Column(Float, nullable=True)
     media = Column(Float, nullable=True)
-    data_nota = Column(Date, default=get_current_time_utc_minus_4)
 
     aluno = relationship("Aluno")
     disciplina = relationship("Disciplina")

@@ -3,7 +3,7 @@ from schemas.aluno import *
 from database.config import Session
 from fastapi import APIRouter, Depends, HTTPException
 from database.dependencies import get_db
-from controllers.AlunoController import AlunoController
+from controllers.alunoController import AlunoController
 
 alunoRouter = APIRouter(prefix='/aluno', tags=['Aluno'] )
 
