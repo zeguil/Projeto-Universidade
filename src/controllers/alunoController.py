@@ -3,7 +3,6 @@ from fastapi import HTTPException
 from models.model import Aluno
 from schemas.aluno import AlunoBase, AlunoCreate, AlunoUpdate
 from typing import List
-from datetime import datetime, date
 from helpers import format_date
 
 class AlunoController:
