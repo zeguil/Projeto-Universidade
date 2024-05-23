@@ -17,10 +17,8 @@ def create_aluno(aluno: AlunoCreate, db: Session = Depends(get_db)):
     return AlunoController(db).create_aluno(aluno)
 
 @alunoRouter.put("/{aluno_id}", response_model=AlunoBase)
-def update_aluno(aluno_id: int, db: Session = Depends(get_db)):
-    db_aluno = AlunoController(db).update_aluno(aluno_id)
-    if db_aluno is None:
-        raise HTTPException(status_code=404, detail="Aluno not found")
+def update_aluno(aluno_id: int, aluno: AlunoUpdate, db: Session = Depends(get_db)):
+    db_aluno = AlunoController(db).update_aluno(aluno_id, aluno)
     return db_aluno
 
 @alunoRouter.delete("/{aluno_id}", response_model=AlunoBase)
