@@ -90,3 +90,15 @@ pip install -r requirements.txt
 
 ```bash
 uvicorn main:app --reload
+```
+
+**OU**
+
+```bash
+docker-compose up
+```
+
+3. **Acesse no Navegador:**
+
+
+*http://localhost:8000*

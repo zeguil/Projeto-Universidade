@@ -11,6 +11,8 @@ class Aluno(Base):
     data_nascimento = Column(Date)
     email = Column(String, unique=True, index=True)
     
+    def __repr__(self):
+        return f"Aluno(id={self.id}, nome='{self.nome}', email='{self.email}')"
 
 class Disciplina(Base):
     __tablename__ = "disciplinas"
@@ -18,6 +20,9 @@ class Disciplina(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome_disciplina = Column(String, index=True)
     professor_responsavel = Column(String)
+    
+    def __repr__(self):
+        return f"Disciplina(id={self.id}, nome_disciplina='{self.nome_disciplina}', professor_responsavel='{self.professor_responsavel}')"
 
 
 class Nota(Base):
