@@ -14,17 +14,13 @@ inspector = inspect(engine)
 
 # Verificar se as tabelas já existem no banco de dados
 existing_tables = inspector.get_table_names()
-if not existing_tables:
-    # Cria as tabelas apenas se elas ainda não existirem
-    Base.metadata.create_all(bind=engine)
-# else:
-#     Base.metadata.drop_all(bind=engine)
-#     print("todas as tabelas foram deletadas")
 
+# Cria as tabelas se elas não existirem
+if not existing_tables:
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuração de origens permitidas
 origins = [
     "http://localhost",
     "http://localhost:8080",
@@ -32,7 +28,7 @@ origins = [
     "http://127.0.0.1:5500",
 ]
 
-# Configuração do middleware CORS
+# Configuração CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -45,11 +41,9 @@ app.include_router(alunoRouter)
 app.include_router(disciplinaRouter)
 app.include_router(notaRouter)
 
-
-
 @app.get("/")
 def index() -> Dict:
-    return {"hello": "world"}
+    return {"acesse:": "localhost:8080/docs"}
 
 if __name__ == "__main__":
     uvicorn.run(app, port=8080, host="localhost")
