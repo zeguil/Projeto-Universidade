@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date
 
 class AlunoBase(BaseModel):
     id: int
     nome: str
-    data_nascimento: str
+    data_nascimento: date
     email: str
 
     class Config:
